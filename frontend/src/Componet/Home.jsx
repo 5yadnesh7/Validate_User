@@ -10,8 +10,8 @@ const Home = () => {
             <Header />
             <header className="bg-primary bg-gradient text-white topMidContainer">
                 <div className="container px-4 text-center">
-                    <h1 className="fw-bolder">Welcome to Scrolling Nav</h1>
-                    <p className="lead">A functional Bootstrap 5 boilerplate for one page scrolling websites</p>
+                    <h1 className="fw-bolder">Welcome to Home Page</h1>
+                    <p className="lead">Magna minim excepteur mollit aliquip in ullamco anim enim amet.</p>
                     <a className="btn btn-lg btn-light" href="#about">Start scrolling!</a>
                 </div>
             </header>

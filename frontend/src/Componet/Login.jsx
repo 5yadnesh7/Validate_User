@@ -4,34 +4,50 @@ import { Link, useNavigate } from 'react-router-dom'
 import Footer from './Footer'
 import Header from './Header'
 import "./login.css"
+import Axios from 'axios'
+import { backendurl } from './config'
 
 const Login = () => {
 
   const [user, setuser] = useState({ email: "", pass: "" })
   const navigate = useNavigate()
 
-  const handleClick = () => {
+  const handleClick = async () => {
     console.log(user);
     if (user.email !== "" && user.pass !== "") {
-      const usersAry = localStorage.getItem("Users")
-      const parseUsers = usersAry ? JSON.parse(usersAry) : []
-      if (parseUsers.length === 0) {
-        alert("Email is Register! Please Register First")
+      // const usersAry = localStorage.getItem("Users")
+      // const parseUsers = usersAry ? JSON.parse(usersAry) : []
+      // if (parseUsers.length === 0) {
+      //   alert("Email is Register! Please Register First")
+      // } else {
+
+      const getUser = await Axios.post(`${backendurl}login`, user)
+      if (getUser.data.status && getUser.data.message === "User Found Successfully") {
+        localStorage.setItem("ActiveUser", JSON.stringify(getUser.data.data))
+        alert('User Login Successfully')
+        navigate("/profile")
+      } else if (getUser.data.status && getUser.data.message === "Invalid Credentials") {
+        alert('Invalid Credentials')
+      } else if (getUser.data.status && getUser.data.message === "User Not Found") {
+        alert('User Not Found, Create Account First to login')
       } else {
-        if (parseUsers.filter(item => item.email === user.email).length === 1) {
-          const ActiveUser = parseUsers.filter(item => item.email === user.email && item.pass === user.pass)
-          if (ActiveUser.length === 1) {
-            localStorage.setItem("ActiveUser", JSON.stringify(ActiveUser[0]))
-            navigate("/profile")
-          } else {
-            alert("Invalid Credentail!")
-          }
-        } else {
-          alert("Email is Register! Please Register First")
-        }
+        alert('Fail to Get User, For More information check logs')
+        console.log(getUser.data);
       }
-    } else {
-      alert("Enter all Field");
+      // if (parseUsers.filter(item => item.email === user.email).length === 1) {
+      //   const ActiveUser = parseUsers.filter(item => item.email === user.email && item.pass === user.pass)
+      //   if (ActiveUser.length === 1) {
+      //     localStorage.setItem("ActiveUser", JSON.stringify(ActiveUser[0]))
+      //     navigate("/profile")
+      //   } else {
+      //     alert("Invalid Credentail!")
+      //   }
+      // } else {
+      //   alert("Email is Register! Please Register First")
+      // }
+      //   }
+      // } else {
+      //   alert("Enter all Field");
     }
   }
 

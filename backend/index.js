@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const route = require('./Routes')
+const db = require('./database')
 
 const port = process.env.PORT || 2121;
 app.use(
@@ -22,6 +23,9 @@ app.get('/', async function (req, res) {
 app.post("/register", route.registerUser);
 app.post("/login", route.loginUser);
 
-app.listen(port, () => {
-    console.log(`Backend is running on ${port}`)
-})
+db.mongoConnect((db) => {
+    app.db = db;
+    app.listen(port, async() => {
+        console.log(`Backend listening at http://localhost:${port}`)
+    })
+});

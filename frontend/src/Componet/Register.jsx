@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import Footer from './Footer'
 import Header from './Header'
 import "./register.css"
+import Axios from 'axios'
+import { backendurl } from './config'
 
 const Register = () => {
 
@@ -12,16 +14,24 @@ const Register = () => {
   })
   const navigate = useNavigate()
 
-  const handleClick = () => {
+  const handleClick = async () => {
     console.log(userData);
     if (userData.fname !== "" && userData.lname !== "" && userData.email !== "" && userData.number !== "" && userData.pass !== "" && userData.cpass !== "" && userData.sucque !== "" && userData.sucans !== "") {
       if (userData.pass === userData.cpass) {
         // Success Code;
-        const usersAry = localStorage.getItem("Users")
-        const parseUsers = usersAry ? JSON.parse(usersAry) : []
-        parseUsers.push(userData)
-        localStorage.setItem("Users", JSON.stringify(parseUsers))
-        navigate("/login")
+        const insertUser = await Axios.post(`${backendurl}register`, userData)
+        if(insertUser.data.status){
+          alert('User Created Successfully, Now Login with Your Credentials')
+          navigate("/login")
+        }else{
+          alert('Fail to Created User, For More information check logs')
+          console.log(insertUser.data);
+        }
+        // const usersAry = localStorage.getItem("Users")
+        // const parseUsers = usersAry ? JSON.parse(usersAry) : []
+        // parseUsers.push(userData)
+        // localStorage.setItem("Users", JSON.stringify(parseUsers))
+        // navigate("/login")
       } else {
         // password and confirm password not match
         alert("Please Enter Password and Confirm Password Same")
