@@ -5,7 +5,9 @@ import Footer from './Footer'
 import Header from './Header'
 import "./login.css"
 import Axios from 'axios'
-import { backendurl } from './config'
+import { backendurl } from './config';
+import jwt_decode from "jwt-decode";
+
 
 const Login = () => {
 
@@ -23,7 +25,11 @@ const Login = () => {
 
       const getUser = await Axios.post(`${backendurl}login`, user)
       if (getUser.data.status && getUser.data.message === "User Found Successfully") {
-        localStorage.setItem("ActiveUser", JSON.stringify(getUser.data.data))
+        // we use this method also to decode token and extract user detail but for try i will verify token and fetch data from middleware in backend
+        // var decoded = jwt_decode(getUser.data.data);
+        // localStorage.setItem("ActiveUser", JSON.stringify(decoded))
+        const getUserDetail = await Axios.post(`${backendurl}fetch`, { email: user.email, token: getUser.data.data })
+        localStorage.setItem("ActiveUser", JSON.stringify(getUserDetail.data.data))
         alert('User Login Successfully')
         navigate("/profile")
       } else if (getUser.data.status && getUser.data.message === "Invalid Credentials") {
